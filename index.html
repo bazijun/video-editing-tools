@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShotCompare Demo</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <div class="brand-mark">SC</div>
+          <div>
+            <h1>ShotCompare</h1>
+            <p>本地相似分镜对比 Demo</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button class="upload-button" id="pickFilesButton" type="button">导入视频</button>
+          <button class="upload-button folder-upload" id="pickFolderButton" type="button">导入文件夹</button>
+          <button class="primary-button" id="analyzeButton" type="button" disabled>重新分析</button>
+          <button class="danger-button" id="cancelButton" type="button" disabled>取消</button>
+        </div>
+        <input id="fileInput" type="file" accept="video/*,.mp4,.mov,.m4v,.mkv,.webm" multiple hidden />
+        <input id="folderInput" type="file" accept="video/*,.mp4,.mov,.m4v,.mkv,.webm" multiple webkitdirectory hidden />
+      </header>
+
+      <section class="control-strip" aria-label="分析参数">
+        <label>
+          采样间隔
+          <select id="sampleInterval">
+            <option value="0.5">0.5 秒</option>
+            <option value="1" selected>1 秒</option>
+            <option value="2">2 秒</option>
+            <option value="3">3 秒</option>
+          </select>
+        </label>
+        <label>
+          分镜敏感度
+          <input id="sceneThreshold" type="range" min="0.18" max="0.58" step="0.01" value="0.34" />
+          <span id="sceneThresholdValue">0.34</span>
+        </label>
+        <label>
+          相似阈值
+          <input id="similarityThreshold" type="range" min="0.12" max="0.65" step="0.01" value="0.38" />
+          <span id="similarityThresholdValue">0.38</span>
+        </label>
+        <label>
+          单视频采样上限
+          <select id="maxSamples">
+            <option value="90">90 帧</option>
+            <option value="180" selected>180 帧</option>
+            <option value="300">300 帧</option>
+          </select>
+        </label>
+        <label class="inline-toggle">
+          <input id="showSoloGroups" type="checkbox" />
+          显示单段
+        </label>
+        <div class="mode-switch global-mode-switch" aria-label="下次分析初始放入">
+          <span>下次分析初始放入</span>
+          <div class="segmented-control">
+            <button class="active" id="modeCompareButton" type="button" data-default-placement="compare">对比区</button>
+            <button id="modeSimilarButton" type="button" data-default-placement="similar">相似区</button>
+          </div>
+        </div>
+      </section>
+
+      <main class="workspace">
+        <aside class="library-column" aria-label="资源">
+          <section class="library-panel group-column" aria-label="相似分组">
+            <div class="section-head">
+              <div>
+                <h2>相似分组</h2>
+                <p id="groupSummary">尚未分析</p>
+              </div>
+            </div>
+            <div id="groupList" class="group-list"></div>
+          </section>
+
+          <section class="library-panel asset-column" aria-label="素材">
+            <div class="browser-tabs" aria-label="素材">
+              <button class="browser-tab active" type="button">素材</button>
+            </div>
+            <div class="section-head compact-head">
+              <div>
+                <h2>素材</h2>
+                <p id="assetSummary">等待选择视频</p>
+              </div>
+            </div>
+            <div id="assetList" class="asset-list"></div>
+          </section>
+        </aside>
+
+        <section class="stage-column" id="stageColumn" aria-label="对比工作区">
+          <div class="stage-toolbar">
+            <div>
+              <h2 id="activeGroupTitle">选择一个相似分组</h2>
+              <p id="activeGroupMeta">顶部配置只决定分析结果初始放入哪一区</p>
+            </div>
+            <div class="stage-actions">
+              <button id="clearCompareButton" class="secondary-button" type="button">全部移到相似区</button>
+              <button id="fullscreenCompareButton" class="secondary-button" type="button">大屏展示</button>
+              <button id="restartCompareButton" class="secondary-button" type="button">从头播放</button>
+              <button id="pauseCompareButton" class="secondary-button" type="button">暂停</button>
+              <button id="playCompareButton" class="primary-button" type="button">同步播放</button>
+              <label class="inline-toggle loop-toggle">
+                <input id="loopCompare" type="checkbox" checked />
+                循环
+              </label>
+            </div>
+          </div>
+
+          <div id="compareGrid" class="compare-grid"></div>
+
+          <div class="candidate-head">
+            <div>
+              <h3>相似区</h3>
+              <p id="candidateSummary">暂无相似片段</p>
+            </div>
+            <button id="moveAllToCompareButton" class="secondary-button" type="button" disabled>全部移入对比</button>
+          </div>
+          <div id="segmentGrid" class="segment-grid"></div>
+        </section>
+
+      </main>
+
+      <footer class="statusbar">
+        <div id="statusText">视频只在本机浏览器内处理，不上传。</div>
+        <div id="metricText">0 素材 / 0 片段 / 0 分组</div>
+      </footer>
+    </div>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
